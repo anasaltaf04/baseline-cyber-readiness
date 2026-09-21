@@ -26,6 +26,15 @@ fetch.
 **Sharing.** `GET /assessments/{id}` is a separate Lambda with a separate
 role. Someone opening a shared link fetches the stored report.
 
+**Client-side routes.** `/check` and `/r/<id>` are React routes, not files in
+S3. A viewer-request CloudFront function attached to the site behaviour
+rewrites any extension-less path to `/index.html`. The usual approach —
+mapping 404 to `/index.html` with `CustomErrorResponses` — is wrong here,
+because those are a property of the distribution rather than of a behaviour
+and would apply to the API as well: a request for a report id that does not
+exist would come back as the app with status 200. A function is attached per
+behaviour, so the API keeps its own status codes.
+
 ## Why the API is on the same origin
 
 CloudFront routes `assessments*` to API Gateway rather than the browser

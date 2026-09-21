@@ -98,7 +98,18 @@ that those notifications are off.
    of `npm run build`, and it was verified by deliberately injecting a leak
    and confirming the build fails.
 
-6. **`minimumProtocolVersion` on the distribution did nothing.** CDK warned
+6. **CloudFront's SPA fallback would have broken the API's 404s.** Mapping
+   404 to `/index.html` is the usual way to make client-side routes work, but
+   `CustomErrorResponses` is a property of the *distribution*, not of a cache
+   behaviour — so it applied to the API too. `GET /assessments/<unknown-id>`
+   would have returned the React app with status 200 instead of a 404, and
+   the app could never have told a missing report from a real one. Found by
+   reading the synthesised template, not by running it. Replaced with a
+   CloudFront viewer-request function attached only to the site behaviour,
+   which rewrites extension-less paths to `/index.html` and leaves the API's
+   status codes alone.
+
+7. **`minimumProtocolVersion` on the distribution did nothing.** CDK warned
    that it has no effect without a custom certificate. Removed rather than
    left in place, because a security setting that is not applied should not
    look like one that is.

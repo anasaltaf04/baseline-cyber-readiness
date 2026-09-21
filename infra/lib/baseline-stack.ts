@@ -230,6 +230,32 @@ export class BaselineStack extends cdk.Stack {
       { protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY },
     );
 
+    // Client-side routing, scoped to the site behaviour only.
+    //
+    // The obvious approach — CustomErrorResponses mapping 404 to /index.html —
+    // is wrong here: those are a property of the distribution, not of a cache
+    // behaviour, so they apply to the API too. A GET for a report id that does
+    // not exist would come back as index.html with status 200 instead of a
+    // 404, and the app could never tell a missing report from a real one.
+    //
+    // A viewer-request function runs only on the behaviour it is attached to,
+    // so the API's own status codes pass through untouched.
+    const spaRouting = new cloudfront.Function(this, 'SpaRouting', {
+      comment: 'Serve index.html for client-side routes',
+      runtime: cloudfront.FunctionRuntime.JS_2_0,
+      code: cloudfront.FunctionCode.fromInline(`
+function handler(event) {
+  var request = event.request;
+  // A path with no file extension is a route (/, /check, /r/<id>), not an
+  // asset. Assets keep their real path so a genuinely missing file still 404s.
+  if (request.uri.indexOf('.') === -1) {
+    request.uri = '/index.html';
+  }
+  return request;
+}
+      `),
+    });
+
     const distribution = new cloudfront.Distribution(this, 'Distribution', {
       comment: 'Baseline',
       defaultRootObject: 'index.html',
@@ -245,6 +271,12 @@ export class BaselineStack extends cdk.Stack {
         cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
         responseHeadersPolicy: securityHeaders,
         compress: true,
+        functionAssociations: [
+          {
+            function: spaRouting,
+            eventType: cloudfront.FunctionEventType.VIEWER_REQUEST,
+          },
+        ],
       },
       additionalBehaviors: {
         // Same-origin API. Keeps CSP tight and removes CORS from the picture.
@@ -259,12 +291,6 @@ export class BaselineStack extends cdk.Stack {
           compress: true,
         },
       },
-      // The report page is a client-side route, so unknown paths must return
-      // the app rather than an S3 error document.
-      errorResponses: [
-        { httpStatus: 403, responseHttpStatus: 200, responsePagePath: '/index.html' },
-        { httpStatus: 404, responseHttpStatus: 200, responsePagePath: '/index.html' },
-      ],
     });
 
     // Ship gate: the stack deploys a working public URL before the frontend
