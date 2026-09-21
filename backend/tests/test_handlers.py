@@ -129,6 +129,15 @@ def test_responses_carry_the_configured_cors_origin(table, no_bedrock, all_yes, 
     assert response["headers"]["X-Content-Type-Options"] == "nosniff"
 
 
+def test_cors_fails_closed_when_no_origin_is_configured(table, no_bedrock, all_yes, monkeypatch):
+    """No allowlist means no header, so another site cannot read a response."""
+    monkeypatch.delenv("ALLOWED_ORIGIN", raising=False)
+    assert "Access-Control-Allow-Origin" not in _post(all_yes)["headers"]
+
+    monkeypatch.setenv("ALLOWED_ORIGIN", "   ")
+    assert "Access-Control-Allow-Origin" not in _post(all_yes)["headers"]
+
+
 def test_new_reports_are_not_cached_but_fetched_ones_are(table, no_bedrock, all_yes):
     created = _post(all_yes)
     assert created["headers"]["Cache-Control"] == "no-store"

@@ -28,11 +28,17 @@ ID_PATTERN = re.compile(r"^[A-Za-z0-9_-]{16,64}$")
 
 
 def _cors_headers() -> dict[str, str]:
-    """Locked to the CloudFront domain the stack deploys; "*" only if unset."""
-    return {
-        "Access-Control-Allow-Origin": os.environ.get("ALLOWED_ORIGIN", "*"),
-        "Vary": "Origin",
-    }
+    """Cross-origin is denied unless an origin is explicitly configured.
+
+    The app is served same-origin: CloudFront routes /api/* to this API, so
+    the browser never makes a cross-origin request and no header is needed.
+    Omitting the header entirely — rather than defaulting to "*" — means a
+    misconfiguration fails closed.
+    """
+    allowed = os.environ.get("ALLOWED_ORIGIN", "").strip()
+    if not allowed:
+        return {"Vary": "Origin"}
+    return {"Access-Control-Allow-Origin": allowed, "Vary": "Origin"}
 
 
 def _respond(status: int, body: dict[str, Any], cache: str = "no-store") -> dict[str, Any]:
