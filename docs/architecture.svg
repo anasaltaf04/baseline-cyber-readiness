@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" width="900" height="560" role="img" aria-labelledby="title desc">
+  <title id="title">Baseline architecture</title>
+  <desc id="desc">A browser reaches CloudFront, which serves the static site from S3 and routes /assessments to an HTTP API. Two Lambda functions handle create and get; create calls Bedrock and writes to DynamoDB, get reads from DynamoDB.</desc>
+
+  <style>
+    .box   { fill: #ffffff; stroke: #94a3b8; stroke-width: 1.5; rx: 10; }
+    .aws   { fill: #fff7ed; stroke: #fb923c; }
+    .data  { fill: #eef2ff; stroke: #818cf8; }
+    .edge  { fill: #f1f5f9; stroke: #64748b; }
+    .t     { font-family: ui-sans-serif, system-ui, "Segoe UI", sans-serif; fill: #0f172a; }
+    .h     { font-size: 14px; font-weight: 600; }
+    .s     { font-size: 11.5px; fill: #475569; }
+    .lbl   { font-size: 11px; fill: #475569; font-style: italic; }
+    .zone  { fill: none; stroke: #cbd5e1; stroke-width: 1.5; stroke-dasharray: 6 5; rx: 14; }
+    .zt    { font-size: 11px; fill: #64748b; font-weight: 600; letter-spacing: .06em; }
+    .flow  { stroke: #475569; stroke-width: 1.8; fill: none; marker-end: url(#a); }
+    @media (prefers-color-scheme: dark) {
+      .box  { fill: #1e293b; stroke: #64748b; }
+      .aws  { fill: #3b2a1a; stroke: #fb923c; }
+      .data { fill: #232a4d; stroke: #818cf8; }
+      .edge { fill: #223040; stroke: #94a3b8; }
+      .t    { fill: #e2e8f0; }
+      .s, .lbl, .zt { fill: #94a3b8; }
+      .zone { stroke: #475569; }
+      .flow { stroke: #94a3b8; }
+    }
+  </style>
+
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <!-- browser -->
+  <rect class="box edge" x="30" y="232" width="150" height="70" rx="10"/>
+  <text class="t h" x="105" y="262" text-anchor="middle">Owner's browser</text>
+  <text class="t s" x="105" y="281" text-anchor="middle">phone or laptop</text>
+
+  <!-- AWS boundary -->
+  <rect class="zone" x="212" y="24" width="660" height="500"/>
+  <text class="zt" x="232" y="48">AWS · us-east-1 · one CDK stack</text>
+
+  <!-- CloudFront -->
+  <rect class="box aws" x="248" y="212" width="160" height="112" rx="10"/>
+  <text class="t h" x="328" y="240" text-anchor="middle">CloudFront</text>
+  <text class="t s" x="328" y="259" text-anchor="middle">HTTPS only · OAC</text>
+  <text class="t s" x="328" y="276" text-anchor="middle">CSP · HSTS · nosniff</text>
+  <text class="t s" x="328" y="293" text-anchor="middle">frame-ancestors none</text>
+  <text class="t s" x="328" y="312" text-anchor="middle">one origin for both</text>
+
+  <!-- S3 -->
+  <rect class="box aws" x="482" y="72" width="160" height="78" rx="10"/>
+  <text class="t h" x="562" y="100" text-anchor="middle">S3</text>
+  <text class="t s" x="562" y="119" text-anchor="middle">React build</text>
+  <text class="t s" x="562" y="136" text-anchor="middle">no public access</text>
+
+  <!-- API GW -->
+  <rect class="box aws" x="482" y="212" width="160" height="78" rx="10"/>
+  <text class="t h" x="562" y="240" text-anchor="middle">API Gateway</text>
+  <text class="t s" x="562" y="259" text-anchor="middle">HTTP API</text>
+  <text class="t s" x="562" y="276" text-anchor="middle">10 req/s · burst 20</text>
+
+  <!-- Lambdas -->
+  <rect class="box aws" x="482" y="330" width="160" height="72" rx="10"/>
+  <text class="t h" x="562" y="356" text-anchor="middle">Lambda · create</text>
+  <text class="t s" x="562" y="374" text-anchor="middle">score, plan, store</text>
+  <text class="t s" x="562" y="391" text-anchor="middle">PutItem + InvokeModel</text>
+
+  <rect class="box aws" x="482" y="426" width="160" height="72" rx="10"/>
+  <text class="t h" x="562" y="452" text-anchor="middle">Lambda · get</text>
+  <text class="t s" x="562" y="470" text-anchor="middle">read one report</text>
+  <text class="t s" x="562" y="487" text-anchor="middle">GetItem only</text>
+
+  <!-- Bedrock + DynamoDB -->
+  <rect class="box data" x="702" y="330" width="150" height="72" rx="10"/>
+  <text class="t h" x="777" y="356" text-anchor="middle">Bedrock</text>
+  <text class="t s" x="777" y="374" text-anchor="middle">Claude Haiku</text>
+  <text class="t s" x="777" y="391" text-anchor="middle">writes the wording</text>
+
+  <rect class="box data" x="702" y="426" width="150" height="72" rx="10"/>
+  <text class="t h" x="777" y="452" text-anchor="middle">DynamoDB</text>
+  <text class="t s" x="777" y="470" text-anchor="middle">on-demand</text>
+  <text class="t s" x="777" y="487" text-anchor="middle">90-day TTL</text>
+
+  <!-- flows -->
+  <path class="flow" d="M182 267 H244"/>
+  <text class="lbl" x="213" y="258" text-anchor="middle">HTTPS</text>
+
+  <path class="flow" d="M410 240 C446 240 446 111 478 111"/>
+  <text class="lbl" x="452" y="160" text-anchor="middle">static files</text>
+
+  <path class="flow" d="M410 268 H478"/>
+  <text class="lbl" x="444" y="286" text-anchor="middle">/assessments*</text>
+
+  <!-- POST goes straight down into the create function -->
+  <path class="flow" d="M545 292 V326"/>
+  <text class="lbl" x="552" y="313" text-anchor="start">POST</text>
+
+  <!-- GET routes down the empty gutter to the left, clear of the create box -->
+  <path class="flow" d="M505 292 C460 300 448 462 478 462"/>
+  <text class="lbl" x="437" y="380" text-anchor="middle" transform="rotate(-90 437 380)">GET /{id}</text>
+
+  <!-- create -> Bedrock, create -> DynamoDB (entering from the top), get -> DynamoDB -->
+  <path class="flow" d="M646 366 H698"/>
+  <path class="flow" d="M646 388 C690 392 777 396 777 422"/>
+  <path class="flow" d="M646 462 H698"/>
+
+  <!-- observability footnote -->
+  <text class="t s" x="232" y="508">CloudWatch: 14-day log retention · one dashboard · alarm on Lambda errors · $20 budget alert</text>
+</svg>
