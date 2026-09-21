@@ -6,9 +6,10 @@
   "scripts": {
     "questions": "node scripts/build-questions.mjs",
     "dev": "npm run questions && vite",
-    "build": "npm run questions && tsc -b && vite build",
+    "build": "npm run questions && tsc -b && vite build && node scripts/check-bundle.mjs",
     "preview": "vite preview",
-    "typecheck": "npm run questions && tsc -b --noEmit"
+    "typecheck": "npm run questions && tsc -b --noEmit",
+    "check": "node scripts/check-bundle.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",

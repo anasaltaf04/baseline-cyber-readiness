@@ -86,6 +86,18 @@ that those notifications are off.
 5. **The header tagline collided with the logo at 390px.** Hidden below the
    `sm` breakpoint.
 
+5b. **The first CI run failed on a check that was itself wrong.** The
+   workflow grepped the built bundle for `why_it_matters` to prove the
+   question bank's answer key had not shipped — but that is a field name on
+   the report the API returns, so `ActionCard` renders `action.why_it_matters`
+   and the identifier is legitimately in the bundle. The check was testing for
+   an identifier when it should have been testing for content. Replaced with
+   `frontend/scripts/check-bundle.mjs`, which asserts none of the bank's
+   remediation *text* is present, that the bank itself is (so the first check
+   cannot pass vacuously), and that no inline script was emitted. It is part
+   of `npm run build`, and it was verified by deliberately injecting a leak
+   and confirming the build fails.
+
 6. **`minimumProtocolVersion` on the distribution did nothing.** CDK warned
    that it has no effect without a custom certificate. Removed rather than
    left in place, because a security setting that is not applied should not
