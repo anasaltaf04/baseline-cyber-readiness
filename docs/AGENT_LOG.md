@@ -149,3 +149,34 @@ until `scripts/deploy.sh` has run:
 
 `scripts/smoke-test.sh <site-url>` checks all of these against a live stack
 and writes nothing to the repository.
+
+### Deploy path added
+
+AWS endpoints turned out to be reachable from the container — the
+`InvalidClientTokenId` came back from AWS itself, not from the egress proxy —
+so the only thing missing was credentials. The environment's `AWS_ACCESS_KEY_ID`
+is 14 characters beginning `prox`, against a real key's 20 beginning `AKIA` or
+`ASIA`, with no session token: proxy placeholders, not an account.
+
+Rather than move credentials into the session, the deploy was set up to run
+where credentials are not stored at all:
+
+- `infra/github-oidc-role.yaml` creates a role GitHub Actions can assume
+  through OIDC, trusting exactly one repository and one branch. It holds no
+  service permissions of its own — only `sts:AssumeRole` on CDK's bootstrap
+  roles and one SSM read for the bootstrap version. A pull request, including
+  one from a fork, cannot assume it.
+- `.github/workflows/deploy.yml` runs the tests, builds, deploys, smoke tests
+  the live URL, and commits the redacted output to `docs/evidence/`. It skips
+  itself while `AWS_DEPLOY_ROLE_ARN` is unset, so it could land before the
+  role existed.
+- `docs/DEPLOY.md` is the runbook for both routes.
+
+Two shell bugs were caught before pushing: GitHub runs `run:` blocks under
+`bash -eo pipefail`, so `[ -n "$X" ] && args+=(...)` and
+`git diff --staged --quiet && ...` would each have aborted their step whenever
+the left-hand side was false — the first on a deploy with no alert email, the
+second on a deploy that produced no new evidence. Both became `if` blocks, and
+every `run:` fragment is now checked with `bash -n`. Checkout also had to be
+pinned to the branch rather than the default detached HEAD, or the evidence
+commit would have had nowhere to push.

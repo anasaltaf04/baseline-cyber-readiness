@@ -1,0 +1,120 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+    # Without this, the commit that writes the evidence would trigger another
+    # deploy, which would write more evidence, forever.
+    paths-ignore:
+      - 'docs/evidence/**'
+  workflow_dispatch:
+
+# Never let two deploys race for the same stack.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+permissions:
+  id-token: write # mint the OIDC token AWS trusts
+  contents: write # commit the deploy evidence back
+
+jobs:
+  deploy:
+    name: Deploy to AWS
+    runs-on: ubuntu-latest
+    # Skips cleanly until the repository variable is set, so this workflow can
+    # land before the IAM role exists.
+    if: vars.AWS_DEPLOY_ROLE_ARN != ''
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Check out the branch itself, not a detached HEAD, so the evidence
+          # commit at the end has somewhere to push to.
+          ref: ${{ github.ref_name }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # The tests gate the deploy. A red suite must never reach the live URL.
+      - name: Backend tests
+        run: |
+          pip install -r backend/requirements-dev.txt
+          cd backend
+          python -m pytest -q | tee "$RUNNER_TEMP/pytest.txt"
+
+      - name: Build the frontend
+        run: npm ci && npm run build
+        working-directory: frontend
+
+      - name: Assume the deploy role
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: us-east-1
+          role-session-name: baseline-deploy-${{ github.run_id }}
+
+      - name: Record the AWS identity
+        run: aws sts get-caller-identity | tee "$RUNNER_TEMP/sts.txt"
+
+      - name: Deploy
+        id: deploy
+        working-directory: infra
+        env:
+          ALERT_EMAIL: ${{ vars.ALERT_EMAIL }}
+          MODEL_ID: ${{ vars.BEDROCK_MODEL_ID }}
+        run: |
+          npm ci
+
+          args=()
+          if [ -n "$ALERT_EMAIL" ]; then args+=(-c "alertEmail=$ALERT_EMAIL"); fi
+          if [ -n "$MODEL_ID" ]; then args+=(-c "modelId=$MODEL_ID"); fi
+
+          npx cdk deploy --require-approval never --outputs-file outputs.json "${args[@]}" \
+            2>&1 | tee "$RUNNER_TEMP/cdk-deploy.txt"
+
+          site_url=$(python3 -c 'import json; print(json.load(open("outputs.json"))["BaselineStack"]["SiteUrl"])')
+          echo "site_url=$site_url" >> "$GITHUB_OUTPUT"
+
+      - name: Smoke test the live site
+        run: ./scripts/smoke-test.sh "${{ steps.deploy.outputs.site_url }}"
+
+      - name: Save the evidence
+        if: always()
+        env:
+          SITE_URL: ${{ steps.deploy.outputs.site_url }}
+        run: |
+          stamp=$(date -u +%Y%m%dT%H%M%SZ)
+          mkdir -p docs/evidence
+          # Account ids are not secret, but they do not belong in a public repo.
+          for name in sts cdk-deploy pytest; do
+            if [ -f "$RUNNER_TEMP/$name.txt" ]; then
+              sed -E 's/[0-9]{12}/<ACCOUNT-ID>/g' "$RUNNER_TEMP/$name.txt" \
+                > "docs/evidence/$name-$stamp.txt"
+            fi
+          done
+          {
+            echo "### Deploy ${{ job.status }}"
+            if [ -n "$SITE_URL" ]; then echo "Live URL: $SITE_URL"; fi
+            echo "Evidence: \`docs/evidence/*-$stamp.txt\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit the evidence
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add docs/evidence
+
+          if git diff --staged --quiet; then
+            echo "No new evidence to record."
+            exit 0
+          fi
+
+          git commit -m "Record deploy evidence for ${GITHUB_SHA::7}"
+          # A human push during the deploy would otherwise reject this.
+          git pull --rebase --autostash origin "$GITHUB_REF_NAME"
+          git push origin "HEAD:$GITHUB_REF_NAME"

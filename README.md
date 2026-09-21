@@ -63,7 +63,7 @@ Full detail: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 - Bedrock model access enabled for the Anthropic Haiku-class model in
   `us-east-1` (Bedrock console → Model access). **Do this first** — it is the
   one step that cannot be done from code, and without it the app silently uses
-  its fallback plan.
+  its fallback plan. Check `plan.source` in any response to tell which you got.
 - A bootstrapped CDK environment: `npx cdk bootstrap aws://<account>/us-east-1`
 
 ### Tests
@@ -76,7 +76,11 @@ python3 -m pytest          # 166 tests, no AWS access needed
 
 ### Deploy
 
+Full runbook, including the GitHub Actions route with no stored credentials:
+**[`docs/DEPLOY.md`](docs/DEPLOY.md)**. The short version:
+
 ```bash
+npx cdk bootstrap aws://<account-id>/us-east-1     # once
 ./scripts/deploy.sh -c alertEmail=you@example.com
 ```
 

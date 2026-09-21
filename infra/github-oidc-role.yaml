@@ -1,0 +1,99 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >
+  Lets GitHub Actions deploy Baseline without any stored AWS credentials.
+  Creates an IAM role that GitHub's OIDC provider can assume, restricted to
+  one repository and one branch.
+
+Parameters:
+  GitHubOwner:
+    Type: String
+    Default: anasaltaf04
+    Description: The GitHub user or organisation that owns the repository.
+
+  GitHubRepo:
+    Type: String
+    Default: baseline-cyber-readiness
+    Description: The repository name, without the owner prefix.
+
+  GitHubBranch:
+    Type: String
+    Default: main
+    Description: >
+      Only this branch may assume the role. A pull request — including one
+      from a fork — cannot deploy.
+
+  CreateOidcProvider:
+    Type: String
+    AllowedValues: ['true', 'false']
+    Default: 'true'
+    Description: >
+      An AWS account may only have one provider per URL. Set this to false if
+      you already use GitHub Actions OIDC in this account.
+
+  BootstrapQualifier:
+    Type: String
+    Default: hnb659fds
+    Description: >
+      The CDK bootstrap qualifier. Leave as-is unless you bootstrapped with
+      --qualifier.
+
+  DeployRegion:
+    Type: String
+    Default: us-east-1
+    Description: The region the Baseline stack is deployed to.
+
+Conditions:
+  ShouldCreateProvider: !Equals [!Ref CreateOidcProvider, 'true']
+
+Resources:
+  GitHubOidcProvider:
+    Type: AWS::IAM::OIDCProvider
+    Condition: ShouldCreateProvider
+    Properties:
+      Url: https://token.actions.githubusercontent.com
+      ClientIdList:
+        - sts.amazonaws.com
+      # AWS validates GitHub's certificate against a trusted root CA, so these
+      # are no longer load-bearing, but the field is still required.
+      ThumbprintList:
+        - 6938fd4d98bab03faadb97b34396831e3780aea1
+        - 1c58a3a8518e8759bf075b76b750d4f2df264fcd
+
+  DeployRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub 'baseline-github-deploy-${GitHubRepo}'
+      Description: Assumed by GitHub Actions to deploy the Baseline stack.
+      MaxSessionDuration: 3600
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: !Sub 'arn:${AWS::Partition}:iam::${AWS::AccountId}:oidc-provider/token.actions.githubusercontent.com'
+            Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+              StringEquals:
+                # Without this the role would trust any GitHub repository.
+                token.actions.githubusercontent.com:aud: sts.amazonaws.com
+                token.actions.githubusercontent.com:sub: !Sub 'repo:${GitHubOwner}/${GitHubRepo}:ref:refs/heads/${GitHubBranch}'
+      Policies:
+        - PolicyName: assume-cdk-bootstrap-roles
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              # The role holds almost nothing itself. CDK's own bootstrap
+              # roles do the work, and this may only step into those.
+              - Effect: Allow
+                Action: sts:AssumeRole
+                Resource: !Sub 'arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-${BootstrapQualifier}-*-${AWS::AccountId}-${DeployRegion}'
+              # `cdk deploy` reads the bootstrap version before it assumes
+              # anything, so this one read has to be direct.
+              - Effect: Allow
+                Action: ssm:GetParameter
+                Resource: !Sub 'arn:${AWS::Partition}:ssm:${DeployRegion}:${AWS::AccountId}:parameter/cdk-bootstrap/${BootstrapQualifier}/version'
+
+Outputs:
+  RoleArn:
+    Description: Set this as the AWS_DEPLOY_ROLE_ARN repository variable in GitHub.
+    Value: !GetAtt DeployRole.Arn
