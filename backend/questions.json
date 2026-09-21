@@ -1,0 +1,662 @@
+{
+  "version": "1.0.0",
+  "framework": "CIS Critical Security Controls v8 — Implementation Group 1",
+  "framework_note": "Safeguard titles below are Baseline's own plain-English paraphrases of the IG1 safeguards, written for a non-technical reader. They are not CIS text.",
+  "answer_weights": {
+    "yes": 1.0,
+    "partly": 0.5,
+    "no": 0.0,
+    "not_sure": 0.0
+  },
+  "sections": [
+    {
+      "id": "devices",
+      "title": "Devices & Software",
+      "blurb": "The computers, phones, and programs your business runs on."
+    },
+    {
+      "id": "accounts",
+      "title": "Accounts & Passwords",
+      "blurb": "Who can sign in to what, and how well those sign-ins are protected."
+    },
+    {
+      "id": "data",
+      "title": "Data & Backups",
+      "blurb": "The information you would not want to lose or leak — and your copies of it."
+    },
+    {
+      "id": "email",
+      "title": "Email & Web",
+      "blurb": "The two doors attackers knock on most often."
+    },
+    {
+      "id": "people",
+      "title": "People & Training",
+      "blurb": "What your team knows to do when something looks wrong."
+    },
+    {
+      "id": "incident",
+      "title": "Incident Readiness",
+      "blurb": "What happens in the first hour of a bad day."
+    }
+  ],
+  "questions": [
+    {
+      "id": "devices-inventory",
+      "section": "devices",
+      "text": "Do you have a written list of every computer, phone, and tablet used for work?",
+      "help": "A spreadsheet is enough. Include who uses each device. You cannot protect a laptop you have forgotten exists.",
+      "safeguards": [
+        { "id": "1.1", "title": "Keep an up-to-date list of the devices used for work" },
+        { "id": "1.2", "title": "Deal with unknown devices found on your network" }
+      ],
+      "remediation": {
+        "title": "Write down every work device",
+        "why_it_matters": "Most small businesses find one or two forgotten laptops or old phones the first time they do this. Forgotten devices do not get updates or antivirus, so they are the easiest way in.",
+        "steps": [
+          "Open a blank spreadsheet with columns: device, who uses it, where it lives, purchased when.",
+          "Walk the office and list what you see, including personal phones used for work email.",
+          "Ask each employee to confirm their own row by the end of the week.",
+          "Set a calendar reminder to review the list every three months."
+        ],
+        "estimated_cost": "$0",
+        "effort": "low",
+        "week": 1,
+        "priority": 20
+      }
+    },
+    {
+      "id": "software-inventory",
+      "section": "devices",
+      "text": "Do you know which programs and apps are installed on your work devices, and remove ones nobody needs?",
+      "help": "Old software that nobody uses still has security holes. Removing it is free and reduces your risk immediately.",
+      "safeguards": [
+        { "id": "2.1", "title": "Keep a list of the software your business actually uses" },
+        { "id": "2.3", "title": "Remove software that is not approved or no longer needed" }
+      ],
+      "remediation": {
+        "title": "Clear unused programs off your computers",
+        "why_it_matters": "Every extra program is another thing that can be attacked. Software nobody opens never gets updated, so it stays vulnerable for years.",
+        "steps": [
+          "On each computer, open the list of installed programs (Settings > Apps on Windows, Applications folder on Mac).",
+          "Uninstall anything the business does not use — old toolbars, trial software, games, outdated PDF or media tools.",
+          "Add the programs you keep to the same spreadsheet as your device list.",
+          "Agree a simple rule: new software gets installed only after you approve it."
+        ],
+        "estimated_cost": "$0",
+        "effort": "low",
+        "week": 2,
+        "priority": 40
+      }
+    },
+    {
+      "id": "auto-updates",
+      "section": "devices",
+      "text": "Are automatic updates turned on for your operating systems and the programs you use?",
+      "help": "Updates close the exact holes attackers use. Automatic means it happens without anyone remembering.",
+      "safeguards": [
+        { "id": "7.3", "title": "Let operating systems update themselves automatically" },
+        { "id": "7.4", "title": "Let applications update themselves automatically" }
+      ],
+      "remediation": {
+        "title": "Turn on automatic updates everywhere",
+        "why_it_matters": "The large majority of successful break-ins use a flaw that already had a fix available. Automatic updates are the single cheapest protection you can buy, because they are free.",
+        "steps": [
+          "Windows: Settings > Windows Update > turn on automatic updates and allow restarts outside business hours.",
+          "Mac: System Settings > General > Software Update > turn on all automatic update options.",
+          "Phones: turn on automatic app and system updates in the device settings.",
+          "For programs that update themselves (browsers, accounting software), confirm the auto-update setting is on."
+        ],
+        "estimated_cost": "$0",
+        "effort": "low",
+        "week": 1,
+        "priority": 10
+      }
+    },
+    {
+      "id": "antivirus",
+      "section": "devices",
+      "text": "Does every work computer run antivirus or anti-malware protection that updates itself?",
+      "help": "Windows Defender, built into Windows, counts — as long as it is switched on and updating.",
+      "safeguards": [
+        { "id": "10.1", "title": "Run anti-malware protection on work devices" },
+        { "id": "10.2", "title": "Keep anti-malware definitions updating automatically" }
+      ],
+      "remediation": {
+        "title": "Switch on anti-malware protection and leave it on",
+        "why_it_matters": "Anti-malware catches the common, mass-mailed attacks that make up most of what a small business will ever face. It costs nothing on Windows and Mac.",
+        "steps": [
+          "Windows: open Windows Security and confirm Virus & threat protection is on with real-time protection enabled.",
+          "Mac: confirm macOS built-in protection is on, or install a reputable paid product if you prefer.",
+          "Check that definition updates are set to automatic on every machine.",
+          "Note any machine where protection is off — that is usually the machine that caused the problem."
+        ],
+        "estimated_cost": "$0 to $5 per computer per month",
+        "effort": "low",
+        "week": 1,
+        "priority": 15
+      }
+    },
+    {
+      "id": "supported-and-router",
+      "section": "devices",
+      "text": "Are your computers, phones, and internet router all still supported by their makers — and did you change the router's default password?",
+      "help": "Supported means the maker still ships security fixes. Windows 10, old iPhones, and routers from a decade ago usually are not. Routers ship with a password printed on the box that everyone knows.",
+      "safeguards": [
+        { "id": "2.2", "title": "Use only software the maker still supports with security fixes" },
+        { "id": "4.2", "title": "Set up network equipment securely instead of leaving factory defaults" },
+        { "id": "12.1", "title": "Keep network equipment current and supported" }
+      ],
+      "remediation": {
+        "title": "Retire unsupported gear and change the router password",
+        "why_it_matters": "When a maker stops supporting a device, newly discovered flaws are never fixed. Default router passwords are published online — anyone can look yours up in seconds.",
+        "steps": [
+          "Check each device against its maker's support dates; flag anything past end of support.",
+          "Budget to replace or upgrade flagged devices — this is usually one or two machines, not all of them.",
+          "Log in to your router's admin page and change the admin password to a long, unique one stored in your password manager.",
+          "While you are there, confirm the router's firmware is up to date and remote administration is off."
+        ],
+        "estimated_cost": "$0 for the router; $400 to $900 per computer that must be replaced",
+        "effort": "medium",
+        "week": 3,
+        "priority": 55
+      }
+    },
+    {
+      "id": "account-inventory",
+      "section": "accounts",
+      "text": "Do you have a list of every account and online service your business uses, and who can sign in to each?",
+      "help": "Think email, accounting, payroll, booking or patient systems, the bank, social media, your website.",
+      "safeguards": [
+        { "id": "5.1", "title": "Keep a list of the accounts your business uses" }
+      ],
+      "remediation": {
+        "title": "List your accounts and who holds the keys",
+        "why_it_matters": "You cannot remove access you do not know about. This list is also what you will need in the first hour of an incident, when you have to lock things down fast.",
+        "steps": [
+          "List every service the business pays for or logs into, including the bank and social media.",
+          "For each one, write down who has an account and who is the owner or administrator.",
+          "Flag any account still tied to a former employee or a personal email address.",
+          "Store the list in your password manager, not in a plain file on a desktop."
+        ],
+        "estimated_cost": "$0",
+        "effort": "low",
+        "week": 2,
+        "priority": 45
+      }
+    },
+    {
+      "id": "unique-passwords",
+      "section": "accounts",
+      "text": "Does every account use a different, long password — ideally kept in a password manager?",
+      "help": "A password manager remembers them for you, so nobody has to reuse the one password they can remember.",
+      "safeguards": [
+        { "id": "5.2", "title": "Use a different, strong password for every account" }
+      ],
+      "remediation": {
+        "title": "Put every password in a password manager",
+        "why_it_matters": "When any website you use gets breached, attackers try that same email and password everywhere else. Reused passwords turn one company's bad day into yours.",
+        "steps": [
+          "Pick a reputable business password manager and buy seats for everyone.",
+          "Have each person install it and move their work passwords in over one week.",
+          "Replace any password that is reused or shorter than 14 characters as you go.",
+          "Use it to share shared logins, instead of emailing or texting passwords around."
+        ],
+        "estimated_cost": "$3 to $8 per person per month",
+        "effort": "medium",
+        "week": 2,
+        "priority": 25
+      }
+    },
+    {
+      "id": "mfa",
+      "section": "accounts",
+      "text": "Is multi-factor authentication turned on for email, banking, and remote access?",
+      "help": "Multi-factor authentication means a second step after the password — a code from an app on your phone. It stops a stolen password from being enough.",
+      "safeguards": [
+        { "id": "6.3", "title": "Require a second sign-in step for outside services" },
+        { "id": "6.4", "title": "Require a second sign-in step for remote access" },
+        { "id": "6.5", "title": "Require a second sign-in step for administrator accounts" }
+      ],
+      "remediation": {
+        "title": "Turn on multi-factor authentication, starting with email and the bank",
+        "why_it_matters": "This is the highest-value hour you will spend. A stolen password alone stops working, and password theft is how most small business accounts are taken over.",
+        "steps": [
+          "Start with the business email account — it is the one that can reset every other password.",
+          "Then the bank, payroll, and any system holding customer or patient records.",
+          "Use an authenticator app rather than text messages where the service offers it.",
+          "Save each service's backup codes in your password manager so nobody gets locked out."
+        ],
+        "estimated_cost": "$0",
+        "effort": "low",
+        "week": 1,
+        "priority": 5
+      }
+    },
+    {
+      "id": "offboarding",
+      "section": "accounts",
+      "text": "When someone leaves, do you shut off all of their access the same day?",
+      "help": "Email, shared drives, the booking system, the door code, the shared social media login.",
+      "safeguards": [
+        { "id": "5.3", "title": "Disable accounts that are no longer in use" },
+        { "id": "6.2", "title": "Remove access promptly when someone leaves" }
+      ],
+      "remediation": {
+        "title": "Make a one-page checklist for the day someone leaves",
+        "why_it_matters": "Former staff accounts are a common way in, and they are rarely watched. A checklist turns a stressful day into a ten-minute task nobody forgets.",
+        "steps": [
+          "Use your account list to write the checklist once: every service, in order, with who disables it.",
+          "Include shared logins that need the password changed, not just individual accounts.",
+          "Include physical items: keys, door codes, company phone, laptop.",
+          "Run the checklist on the last day, and keep the signed copy in the employee's file."
+        ],
+        "estimated_cost": "$0",
+        "effort": "low",
+        "week": 3,
+        "priority": 50
+      }
+    },
+    {
+      "id": "admin-separation",
+      "section": "accounts",
+      "text": "Do people use ordinary accounts for daily work, with administrator access kept separate and limited?",
+      "help": "If you are signed in as an administrator all day, anything that infects your computer gets administrator power too.",
+      "safeguards": [
+        { "id": "4.7", "title": "Change or disable the accounts that come built into new systems" },
+        { "id": "5.4", "title": "Keep administrator rights to separate accounts used only for admin work" }
+      ],
+      "remediation": {
+        "title": "Separate everyday accounts from administrator accounts",
+        "why_it_matters": "Malware runs with the same power as whoever is signed in. Working from a standard account contains most infections to one user's files instead of the whole machine.",
+        "steps": [
+          "On each computer, create a standard (non-administrator) account for daily use.",
+          "Keep one separate administrator account per machine, used only when installing software.",
+          "Change the password on any built-in or default account that came with a device or service.",
+          "Review who has administrator access to your online services and remove anyone who does not need it."
+        ],
+        "estimated_cost": "$0",
+        "effort": "medium",
+        "week": 4,
+        "priority": 65
+      }
+    },
+    {
+      "id": "data-inventory",
+      "section": "data",
+      "text": "Do you know what sensitive information you hold, where it lives, and who can open it?",
+      "help": "Customer records, card or bank details, medical or employee files. Where means which computer, which cloud folder, which filing cabinet.",
+      "safeguards": [
+        { "id": "3.1", "title": "Decide how the business handles sensitive information" },
+        { "id": "3.2", "title": "Keep a list of the sensitive information you hold and where it is" },
+        { "id": "3.3", "title": "Limit who can open sensitive files to the people who need them" }
+      ],
+      "remediation": {
+        "title": "Map your sensitive information and lock down the folders",
+        "why_it_matters": "Breach costs and legal duties are driven by what was exposed. Knowing where the sensitive files are is what lets you protect the few that matter instead of everything equally.",
+        "steps": [
+          "List the kinds of sensitive information you hold and which system or folder each one lives in.",
+          "For each location, check who currently has access and remove people who do not need it.",
+          "Turn off broad sharing links on cloud folders holding customer or employee records.",
+          "Write a half-page note saying who may access what — that note is your data handling policy."
+        ],
+        "estimated_cost": "$0",
+        "effort": "medium",
+        "week": 2,
+        "priority": 35
+      }
+    },
+    {
+      "id": "automatic-backups",
+      "section": "data",
+      "text": "Are your important files backed up automatically, without anyone having to remember?",
+      "help": "Cloud sync alone is not a backup — if a file is encrypted or deleted, the sync copies that too.",
+      "safeguards": [
+        { "id": "11.2", "title": "Back up important data automatically on a schedule" }
+      ],
+      "remediation": {
+        "title": "Set up automatic backups of everything you cannot lose",
+        "why_it_matters": "Ransomware is survivable if you can restore. Without a backup, the choice is paying criminals or rebuilding the business from paper.",
+        "steps": [
+          "List what must survive: customer records, accounting files, contracts, the appointment system.",
+          "Choose a backup service that runs on a schedule with no human involvement, and turn on versioning.",
+          "Confirm every device and cloud system holding that data is actually covered — cloud services are not backed up by default.",
+          "Check the backup dashboard weekly for failures for the first month."
+        ],
+        "estimated_cost": "$5 to $30 per month",
+        "effort": "medium",
+        "week": 1,
+        "priority": 12
+      }
+    },
+    {
+      "id": "backup-offline-tested",
+      "section": "data",
+      "text": "Is at least one backup copy kept where ransomware cannot reach it — and have you actually restored a file from it?",
+      "help": "Unreachable means offline, or in a separate account an attacker on your network cannot sign in to. Untested backups fail exactly when you need them.",
+      "safeguards": [
+        { "id": "11.1", "title": "Have a written process for getting your data back" },
+        { "id": "11.3", "title": "Protect backup copies as carefully as the originals" },
+        { "id": "11.4", "title": "Keep at least one backup copy separated from your main systems" }
+      ],
+      "remediation": {
+        "title": "Keep one backup out of reach, and test a restore",
+        "why_it_matters": "Modern ransomware hunts for backups first. A backup an attacker can delete is not a backup, and a backup you have never restored from is a guess.",
+        "steps": [
+          "Make sure one copy is offline or in a separate account with its own password and second sign-in step.",
+          "Pick a real file, delete nothing, and restore it to a new location to prove the process works.",
+          "Write down the restore steps on one page and note how long it took.",
+          "Repeat the test every three months, and after any change to your systems."
+        ],
+        "estimated_cost": "$0 to $20 per month",
+        "effort": "medium",
+        "week": 3,
+        "priority": 30
+      }
+    },
+    {
+      "id": "device-encryption",
+      "section": "data",
+      "text": "Are laptops and phones encrypted, so a lost device does not become a data breach?",
+      "help": "Encryption scrambles the drive so it is unreadable without the sign-in. BitLocker on Windows and FileVault on Mac are free and built in.",
+      "safeguards": [
+        { "id": "3.6", "title": "Encrypt the drives on laptops, phones, and tablets" }
+      ],
+      "remediation": {
+        "title": "Turn on built-in encryption for every laptop and phone",
+        "why_it_matters": "A laptop left in a car is a lost laptop if it is encrypted, and a reportable breach if it is not. Turning this on takes a few minutes per device and costs nothing.",
+        "steps": [
+          "Windows Pro: Settings > Privacy & security > Device encryption or BitLocker, and turn it on.",
+          "Mac: System Settings > Privacy & Security > FileVault > turn on.",
+          "Phones and tablets: set a passcode — encryption turns on automatically once one is set.",
+          "Save each machine's recovery key in your password manager, not on the machine itself."
+        ],
+        "estimated_cost": "$0",
+        "effort": "low",
+        "week": 2,
+        "priority": 28
+      }
+    },
+    {
+      "id": "secure-disposal",
+      "section": "data",
+      "text": "Do you securely wipe or destroy old computers, phones, and paper records before getting rid of them?",
+      "help": "Deleting files and emptying the trash does not remove them from the drive. Factory reset on an encrypted device does.",
+      "safeguards": [
+        { "id": "3.4", "title": "Keep information only as long as you actually need it" },
+        { "id": "3.5", "title": "Destroy information safely when you dispose of it" }
+      ],
+      "remediation": {
+        "title": "Wipe devices and shred paper before they leave the building",
+        "why_it_matters": "Old drives sold or donated with data still on them are a well-documented source of breaches, and they are entirely avoidable.",
+        "steps": [
+          "Before any device leaves, confirm it is encrypted, then do a full factory reset.",
+          "Sign the device out of all accounts first, so it is not still tied to your business.",
+          "Buy a cross-cut shredder for paper records containing customer or employee details.",
+          "Decide how long you keep records and delete what is past that date — less data is less risk."
+        ],
+        "estimated_cost": "$40 to $150 one-time for a shredder",
+        "effort": "low",
+        "week": 4,
+        "priority": 80
+      }
+    },
+    {
+      "id": "supported-browser-email",
+      "section": "email",
+      "text": "Is everyone using a current, supported web browser and email program?",
+      "help": "Browsers and email programs are where attacks land first, so an old one is a standing invitation.",
+      "safeguards": [
+        { "id": "9.1", "title": "Use only browsers and email programs the maker still supports" }
+      ],
+      "remediation": {
+        "title": "Standardise on a current browser and email program",
+        "why_it_matters": "Browsers and email clients handle untrusted content from strangers all day. A version that stopped getting fixes is the most exposed software you own.",
+        "steps": [
+          "Pick one browser the business supports and install it everywhere.",
+          "Remove old browsers nobody uses, and confirm auto-update is on for the one you keep.",
+          "Do the same for the email program, or move everyone to the web version of your email service.",
+          "Remove browser extensions nobody needs — they can read everything on the page."
+        ],
+        "estimated_cost": "$0",
+        "effort": "low",
+        "week": 2,
+        "priority": 60
+      }
+    },
+    {
+      "id": "dns-filtering",
+      "section": "email",
+      "text": "Do you use a filtering service that blocks known-bad websites before they load?",
+      "help": "This is a setting on your router or computers that checks every web address against a list of known scam and malware sites. Free options exist.",
+      "safeguards": [
+        { "id": "9.2", "title": "Use a filtering service that blocks known-bad websites" }
+      ],
+      "remediation": {
+        "title": "Add a web filter that blocks known-bad sites",
+        "why_it_matters": "It stops a mistaken click before anything downloads. This is one setting, applied once at the router, that protects every device behind it.",
+        "steps": [
+          "Choose a reputable DNS filtering service — several have free tiers for small businesses.",
+          "Enter the two addresses it gives you into your router's DNS settings.",
+          "Test it by visiting the service's test page to confirm blocking works.",
+          "For laptops that leave the office, install the service's small app so they stay protected."
+        ],
+        "estimated_cost": "$0 to $20 per month",
+        "effort": "low",
+        "week": 3,
+        "priority": 70
+      }
+    },
+    {
+      "id": "payment-verification",
+      "section": "email",
+      "text": "Before changing where money is sent, do you always confirm by phone on a number you already had?",
+      "help": "Emails asking to update bank details are the most expensive scam hitting small businesses. The phone number in the email is the scammer's.",
+      "safeguards": [
+        { "id": "14.2", "title": "Train people to spot messages designed to trick them" }
+      ],
+      "remediation": {
+        "title": "Make a phone call mandatory for any payment change",
+        "why_it_matters": "Invoice and payroll redirection is the single largest source of direct financial loss for businesses your size, and one phone call stops it.",
+        "steps": [
+          "Write the rule down: no change to bank details, payroll, or wire instructions without a call-back.",
+          "Call the number you already have on file — never a number from the email or invoice.",
+          "Name a second person who must approve payments over an amount you choose.",
+          "Tell your team that nobody will ever be criticised for slowing a payment down to check."
+        ],
+        "estimated_cost": "$0",
+        "effort": "low",
+        "week": 1,
+        "priority": 8
+      }
+    },
+    {
+      "id": "security-training",
+      "section": "people",
+      "text": "Does everyone get basic security awareness training when they join and at least once a year?",
+      "help": "Short and regular beats long and annual. Fifteen minutes a quarter is enough to matter.",
+      "safeguards": [
+        { "id": "14.1", "title": "Run an ongoing security awareness programme" }
+      ],
+      "remediation": {
+        "title": "Start a short, regular security awareness habit",
+        "why_it_matters": "Your staff are the control that works when the technical ones are bypassed. Training also demonstrates diligence to insurers and clients who ask.",
+        "steps": [
+          "Pick a low-cost training service, or use free material from a national cybersecurity agency.",
+          "Schedule fifteen minutes each quarter as a standing item in a team meeting.",
+          "Add a short session to your onboarding checklist for new hires.",
+          "Keep a simple record of who completed what and when."
+        ],
+        "estimated_cost": "$0 to $5 per person per month",
+        "effort": "medium",
+        "week": 4,
+        "priority": 75
+      }
+    },
+    {
+      "id": "phishing-recognition",
+      "section": "people",
+      "text": "Would your team recognise a fake login page or a message pretending to be you?",
+      "help": "The most common attack is an email that looks like it is from the boss, a supplier, or a service you use.",
+      "safeguards": [
+        { "id": "14.2", "title": "Train people to spot messages designed to trick them" },
+        { "id": "14.3", "title": "Teach good habits for passwords and sign-ins" }
+      ],
+      "remediation": {
+        "title": "Teach the three signs of a fake message",
+        "why_it_matters": "Phishing is how most incidents start. People do not need to become experts — they need three reliable habits that catch the common cases.",
+        "steps": [
+          "Teach one rule: urgency plus money plus a link means stop and verify another way.",
+          "Show everyone how to check the real sender address and hover over a link before clicking.",
+          "Tell them the business will never ask for passwords or gift cards by email or text.",
+          "Send a harmless test message yourself after a month and talk through who clicked, without blame."
+        ],
+        "estimated_cost": "$0",
+        "effort": "low",
+        "week": 3,
+        "priority": 58
+      }
+    },
+    {
+      "id": "data-handling-rules",
+      "section": "people",
+      "text": "Does your team know the rules for handling customer information — what may be emailed, stored, or taken home?",
+      "help": "Most leaks are accidents: a file sent to the wrong person, records on a personal laptop, a shared link left open.",
+      "safeguards": [
+        { "id": "14.4", "title": "Teach people how to handle sensitive information properly" },
+        { "id": "14.5", "title": "Teach people the common ways information gets exposed by accident" }
+      ],
+      "remediation": {
+        "title": "Write one page of rules for handling customer information",
+        "why_it_matters": "Accidental exposure causes more small-business incidents than hacking does, and clear rules cost nothing to put in place.",
+        "steps": [
+          "Write one page: what counts as sensitive, where it may be stored, how it may be sent.",
+          "Be specific about the common mistakes — personal email, personal cloud drives, open share links.",
+          "Cover working from home and what may go on a personal device.",
+          "Have everyone read and sign it, and revisit it in your quarterly training slot."
+        ],
+        "estimated_cost": "$0",
+        "effort": "low",
+        "week": 4,
+        "priority": 78
+      }
+    },
+    {
+      "id": "report-suspicious",
+      "section": "people",
+      "text": "Does everyone know exactly who to tell, and how, the moment something looks wrong?",
+      "help": "One name and one method. Speed matters far more than certainty — a false alarm costs nothing.",
+      "safeguards": [
+        { "id": "14.6", "title": "Teach people how and when to report a security problem" }
+      ],
+      "remediation": {
+        "title": "Give everyone one name to call when something looks wrong",
+        "why_it_matters": "The gap between a mistaken click and someone being told is what decides how bad an incident gets. Hours matter; days are fatal.",
+        "steps": [
+          "Name one person as the contact, and one backup for when they are away.",
+          "Put the name, phone number, and email on a card or poster people can see.",
+          "Say clearly that reporting fast is rewarded and never punished, even if it was their mistake.",
+          "Practise once: ask someone to report a pretend problem and see how far it gets."
+        ],
+        "estimated_cost": "$0",
+        "effort": "low",
+        "week": 1,
+        "priority": 18
+      }
+    },
+    {
+      "id": "incident-owner",
+      "section": "incident",
+      "text": "Is there one named person responsible for handling a security incident?",
+      "help": "For most small businesses this is the owner or office manager. What matters is that it is written down and that person knows it.",
+      "safeguards": [
+        { "id": "17.1", "title": "Name who is in charge when a security incident happens" }
+      ],
+      "remediation": {
+        "title": "Name who is in charge during an incident",
+        "why_it_matters": "In the first hour, the expensive delay is almost always nobody being sure whose call it is. Naming someone in advance removes that delay for free.",
+        "steps": [
+          "Choose one person to lead and one to stand in when they are unavailable.",
+          "Write down what they are authorised to do without asking — disconnect machines, call the bank, close accounts.",
+          "Tell the whole team who it is.",
+          "Review the choice once a year, or whenever that person changes role."
+        ],
+        "estimated_cost": "$0",
+        "effort": "low",
+        "week": 1,
+        "priority": 22
+      }
+    },
+    {
+      "id": "incident-contacts",
+      "section": "incident",
+      "text": "Do you have an up-to-date contact list for your bank, insurer, IT help, and key suppliers?",
+      "help": "Kept somewhere you could reach it if your computers were down — printed, or on a phone.",
+      "safeguards": [
+        { "id": "17.2", "title": "Keep contact details ready for reporting a security incident" },
+        { "id": "15.1", "title": "Keep a list of the outside services your business depends on" }
+      ],
+      "remediation": {
+        "title": "Build a one-page emergency contact sheet",
+        "why_it_matters": "If your systems are encrypted or your email is locked, the contact list inside them is gone too. A printed page is the cheapest resilience you can buy.",
+        "steps": [
+          "List your bank's fraud line, your insurer and policy number, your IT support, and your main suppliers.",
+          "Add your local law enforcement cyber reporting contact and your payment processor.",
+          "List the outside services that hold your data, with account numbers and support contacts.",
+          "Print it, give a copy to the incident lead and the backup, and refresh it every six months."
+        ],
+        "estimated_cost": "$0",
+        "effort": "low",
+        "week": 2,
+        "priority": 38
+      }
+    },
+    {
+      "id": "incident-plan",
+      "section": "incident",
+      "text": "Do you have a short written plan for the first hour of an incident, and has anyone read it recently?",
+      "help": "One page is plenty: who to call, what to disconnect, what not to delete, who talks to customers.",
+      "safeguards": [
+        { "id": "17.3", "title": "Have a written process for reporting and handling incidents" }
+      ],
+      "remediation": {
+        "title": "Write the one-page first-hour plan",
+        "why_it_matters": "Under pressure people do not improvise well. A page that says what to do first turns panic into a checklist, and insurers increasingly ask to see one.",
+        "steps": [
+          "Write the first five steps: who is told, what gets disconnected from the network, what gets photographed, what is not deleted.",
+          "Add who calls the bank and who speaks to customers, so two people do not say different things.",
+          "Include the decision to call your insurer early — most policies require prompt notice.",
+          "Read it aloud with the team once, then store printed copies with the contact sheet."
+        ],
+        "estimated_cost": "$0",
+        "effort": "medium",
+        "week": 3,
+        "priority": 42
+      }
+    },
+    {
+      "id": "incident-insurance",
+      "section": "incident",
+      "text": "Do you know whether your insurance would actually cover a cyber incident, and what it requires of you?",
+      "help": "Many general business policies exclude cyber events. Cyber policies often require things like multi-factor authentication to pay out.",
+      "safeguards": [
+        { "id": "17.2", "title": "Keep contact details ready for reporting a security incident" },
+        { "id": "15.1", "title": "Keep a list of the outside services your business depends on" }
+      ],
+      "remediation": {
+        "title": "Find out what your insurance actually covers",
+        "why_it_matters": "Owners routinely discover after an incident that cyber was excluded, or that a policy condition they never met voids the claim. One phone call settles it.",
+        "steps": [
+          "Call your broker and ask plainly whether cyber incidents and ransomware are covered.",
+          "Ask what the policy requires of you — multi-factor authentication and backups are common conditions.",
+          "Write the answer, the policy number, and the claims phone number on your contact sheet.",
+          "If you are not covered, get a quote so the decision is a choice rather than an accident."
+        ],
+        "estimated_cost": "$0 to ask; $500 to $1,500 a year if you buy a policy",
+        "effort": "low",
+        "week": 4,
+        "priority": 85
+      }
+    }
+  ]
+}

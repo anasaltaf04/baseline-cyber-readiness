@@ -1,0 +1,31 @@
+# Node
+node_modules/
+dist/
+*.tsbuildinfo
+.npm/
+
+# CDK
+infra/cdk.out/
+infra/.cdk.staging/
+cdk.context.json
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+*.egg-info/
+
+# Env / secrets — never commit these
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+aws-exports.js
+
+# Editors / OS
+.DS_Store
+.vscode/
+.idea/
