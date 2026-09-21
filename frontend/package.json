@@ -1,0 +1,28 @@
+{
+  "name": "baseline-frontend",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "questions": "node scripts/build-questions.mjs",
+    "dev": "npm run questions && vite",
+    "build": "npm run questions && tsc -b && vite build",
+    "preview": "vite preview",
+    "typecheck": "npm run questions && tsc -b --noEmit"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.28.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.0.0",
+    "@types/node": "^22.20.4",
+    "@types/react": "^18.3.17",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "tailwindcss": "^4.0.0",
+    "typescript": "~5.7.2",
+    "vite": "^6.0.5"
+  }
+}

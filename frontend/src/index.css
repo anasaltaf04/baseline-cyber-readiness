@@ -1,0 +1,102 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-ink: #0f172a;
+  --color-ink-soft: #334155;
+  --color-muted: #5b6b82;
+  --color-line: #e2e8f0;
+  --color-surface: #ffffff;
+  --color-canvas: #f6f8fb;
+
+  --color-brand: #1d4ed8;
+  --color-brand-dark: #1e3a8a;
+  --color-brand-tint: #eef2ff;
+
+  --color-good: #15803d;
+  --color-ok: #a16207;
+  --color-warn: #b45309;
+  --color-bad: #b91c1c;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+  font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* A single, always-visible focus treatment. Keyboard users must never have to
+   guess where they are. */
+:focus-visible {
+  outline: 3px solid var(--color-brand);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Headings are focused programmatically when a step changes, so a screen
+   reader announces the new step. They are not in the tab order, so drawing a
+   focus ring around them only confuses sighted users. */
+[tabindex='-1']:focus,
+[tabindex='-1']:focus-visible {
+  outline: none;
+}
+
+/* A <legend> is painted on the fieldset's border, so a question long enough
+   to wrap gets a line struck through it. Floating the legend takes it out of
+   that flow while keeping the native fieldset/legend grouping that screen
+   readers rely on. */
+fieldset > legend {
+  float: left;
+  width: 100%;
+}
+
+fieldset > legend + * {
+  clear: both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* The report is meant to be printed and handed to an accountant or insurer,
+   so the printed page is a real output, not an afterthought. */
+@media print {
+  @page {
+    margin: 14mm;
+  }
+
+  body {
+    background: #fff;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-block {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .print-tight {
+    box-shadow: none !important;
+    border: 1px solid #cbd5e1 !important;
+  }
+
+  a[href^='http']::after {
+    content: ' (' attr(href) ')';
+    font-size: 0.75rem;
+    color: #475569;
+  }
+}

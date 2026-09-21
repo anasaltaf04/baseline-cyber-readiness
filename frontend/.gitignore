@@ -1,0 +1,3 @@
+# Generated from backend/questions.json by scripts/build-questions.mjs.
+# Derived data does not belong in version control.
+src/questions.generated.json
